@@ -1,0 +1,17 @@
+#Static type checker(pour supporter les erreurs des types en python)
+mypy
+
+#Pour utiliser l'API telegram
+python-telegram-bot
+
+#Pour lire les variables de l'environment
+python-dotenv
+
+#Module request advance
+requests
+
+#Driver postgresql (pour se connecter a la base de donne)
+psycopg
+
+#Web framework (pour servir les mini application)
+Flask
