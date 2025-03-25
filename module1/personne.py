@@ -1,11 +1,10 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
-import module1.voiture as voiture
 from enum import StrEnum
-from module1.storage import Storable
+import module1.storage
 
 
-class Personne(Storable, ABC):
+class Personne(module1.storage.Storable, ABC):
     def __init__(self, chat_id: int, first_name: str, last_name: str, username: str, is_bot: bool, language_code: str):
         self.chat_id = chat_id
         self.first_name = first_name
@@ -13,12 +12,11 @@ class Personne(Storable, ABC):
         self.username = username
         self.is_bot = is_bot
         self.language_code = language_code
-        self.voiture = voiture
         self.role = "client"
         self.store_db()
 
     def store_db(self):
-        cursor = Storable.connection.cursor()
+        cursor = module1.storage.Storable.connection.cursor()
         cursor.execute("insert into users(chat_id, first_name, last_name, username, is_bot, language_code, role)"
                        " values(%s, %s, %s , %s, %s, %s, %s)"
                        " on conflict (chat_id) do update "
@@ -31,13 +29,15 @@ class Personne(Storable, ABC):
 
 
 class Client(Personne):
+    def __init__(self, chat_id: int, first_name: str, last_name: str, username: str, is_bot: bool, language_code: str):
+        Personne.__init__(self, chat_id, first_name, last_name, username, is_bot, language_code)
+        self.store_db()
     def become_mecanique(self):
         ...
 
 
 class Mecanicien(Personne):
-    def __init__(self, chat_id: int, first_name: str, last_name: str, username: str, is_bot: bool, language_code: str
-                 , password: str, voiture: voiture.Voiture | None = None):
-        super().__init__(chat_id, first_name, last_name, username, is_bot, language_code, voiture)
+    def __init__(self, chat_id: int, first_name: str, last_name: str, username: str, is_bot: bool, language_code: str, password: str):
+        Personne.__init__(self,chat_id, first_name, last_name, username, is_bot, language_code)
         self.password = password
         self.role = "mecanicien"

@@ -1,12 +1,13 @@
 from __future__ import annotations
 from typing import Final
-import module1.personne as personne, module1.composant as composant
+import module1.personne as Per
 from datetime import datetime
-from module1.storage import Storable
+import module1.storage
 
 
-class Voiture(Storable):
-    def __init__(self,model : str, production_year : int|None, brand : str, km : int = 0, user : personne.Personne | None = None):
+
+class Voiture(module1.storage.Storable):
+    def __init__(self,model : str, production_year : int|None, brand : str, km : int = 0, user : Per.Personne | None = None):
         self.model = model
         if self.is_production_year_valid(production_year):
             self.production_year = production_year
@@ -21,7 +22,7 @@ class Voiture(Storable):
             return True
         return False
     def store_db(self):
-        cursor = Storable.cursor()
+        cursor = module1.storage.Storable.cursor()
         id = cursor.execute(f"select id,name from car_brand where name = {self.brand}").fetchone()
         if not id:
             cursor.execute("insert into car_brand(name) values(%s) returning id", ({self.brand}))
