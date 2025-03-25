@@ -21,7 +21,6 @@ class Personne(ABC):
         " values(%s, %s, %s , %s, %s, %s, %s)"
         " on conflict (chat_id) do nothing"
         ,({self.chat_id}, {self.first_name}, {self.last_name}, {self.username}, {self.is_bot}, {self.language_code if self.language_code else 'fr'}, {self.role}) )
-        cursor.execute("insert into car_listing")
 
 class Client(Personne):
     def become_mecanique(self):
