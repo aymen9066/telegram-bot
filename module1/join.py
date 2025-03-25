@@ -12,6 +12,7 @@ class Storable(ABC):
     if db_password is None:
         raise ValueError("can't find env variable db_password!")
     connection = psycopg.connect(f"dbname={db_user} user={db_user} password={db_password} host=localhost")
+    connection.autocommit = True
     cursor = connection.cursor()
     f =  open(os.path.dirname(os.path.realpath(__file__))+ "/tables.sql", "r")
     sql_commands = f.read()
@@ -30,12 +31,14 @@ class Personne(Storable, ABC):
 
     def store_db(self):
         cursor = Storable.connection.cursor()
+        lang = self.language_code if self.language_code else 'fr'
+        lang = "fr"
         cursor.execute("insert into users(chat_id, first_name, last_name, username, is_bot, language_code, role)"
                        " values(%s, %s, %s , %s, %s, %s, %s)"
                        " on conflict (chat_id) do update "
-                       "set first_name = excluded.first_name and last_name = excluded.last_name and username = excluded.username and language_code = excluded.language_code"
-                       , ({self.chat_id}, {self.first_name}, {self.last_name}, {self.username}, {self.is_bot},
-                          {self.language_code if self.language_code else 'fr'}, {self.role}))
+                       "set first_name = excluded.first_name,last_name = excluded.last_name,username = excluded.username,language_code = excluded.language_code"
+                       , (self.chat_id, self.first_name, self.last_name, self.username, self.is_bot,
+                          lang, self.role))
 
     def __str__(self):
         return f"{self.__class__.__name__} {self.first_name},{self.last_name} avec chat_id = {self.chat_id} et username = {self.username} et is_bot = {self.is_bot} et lang = {self.language_code}"
@@ -65,28 +68,29 @@ class Voiture(Storable):
         self.brand = brand
         self.km = km
         self.user = user
+        self.store_db()
 
     def is_production_year_valid(self, value : int|None) -> bool:
         if value is not None and 1970 <= value <= datetime.now().year:
             return True
         return False
     def store_db(self):
-        cursor = Storable.cursor()
-        id = cursor.execute(f"select id,name from car_brand where name = {self.brand}").fetchone()
+        cursor = Storable.connection.cursor()
+        id = cursor.execute(f"select id,name from car_brand where name = '{self.brand}'").fetchone()
         if not id:
-            cursor.execute("insert into car_brand(name) values(%s) returning id", ({self.brand}))
+            cursor.execute("insert into car_brand(name) values(%s) returning id", (self.brand,))
             brand_id = cursor.fetchone()[0]
         else:
             brand_id = id[0]
-        id = cursor.execute(f"select id,name from car_model where name = {self.model}").fetchone()
+        id = cursor.execute(f"select id,name from car_model where name = '{self.model}'").fetchone()
         if not id:
             cursor.execute("insert into car_model(id_brand, name, production_year) values(%s, %s, %s) returning id"
-                           , (brand_id , {self.model}, {self.production_year}))
+                           , (brand_id , self.model, self.production_year))
             model_id = cursor.fetchone()[0]
         else:
             model_id = id[0]
-        car_id = cursor.execute("insert into cars(id_model, km_dirven) values(%s,%s) returning id" ,(model_id, {self.km})).fetchone()
-        user_id = cursor.execute(f"select id from users where chat_id = {self.user.chat_id}").fetchone()[0]
+        car_id = cursor.execute("insert into cars(id_model, km_dirven) values(%s,%s) returning id" ,(model_id, self.km)).fetchone()
+        user_id = cursor.execute(f"select id from users where chat_id = {self.user.chat_id}").fetchone()
         cursor.execute("insert into car_listing values(%s, %s)", (car_id[0], user_id[0]))
 
     def __str__(self):
@@ -99,13 +103,15 @@ db_password = os.getenv("db_password")
 if db_password is None:
     raise ValueError("can't find env variable db_password!")
 connection = psycopg.connect(f"dbname={db_user} user={db_user} password={db_password} host=localhost")
+connection.autocommit = True
 cursor = connection.cursor()
 f =  open(os.path.dirname(os.path.realpath(__file__))+ "/tables.sql", "r")
 sql_commands = f.read()
 cursor.execute(sql_commands)
 
 x = cursor.execute(f"select chat_id from users where chat_id = 123").fetchone()
-#u1 = personne.Client(141651621, "Akram", "Salama", "Akram3151", False, "ar")
+u1 = Client(141651621, "Akram", "Salama", "Akram3151", False, "ar")
+v1 = Voiture("S class", 2020, "Mercedes", 12000, u1)
 if x:
     print("element found")
     print(x[0])
