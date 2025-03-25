@@ -1,7 +1,7 @@
 create table if not exists users
 (
     id            serial primary key,
-    chat_id       int     not null unique,
+    chat_id       bigint     not null unique,
     first_name    text    not null,
     last_name     text,
     username      text,
@@ -43,3 +43,5 @@ create table if not exists car_listing
     constraint fk_idcar foreign key (id_car) references cars (id),
     constraint fk_iduser foreign key (id_user) references users (id)
 );
+
+commit;
