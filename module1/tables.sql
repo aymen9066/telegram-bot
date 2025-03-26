@@ -11,8 +11,9 @@ create table if not exists users
     role          text default 'client',
     constraint check_role check (role in ('client', 'mecanicien', 'bot'))
 );
-insert into users(first_name, last_name, username, is_bot, role) values('telegram', 'bot', 'driveSafe', true, 'bot');
-select setval('users_id_seq', currval('users_id_seq')+1);
+insert into users(chat_id, first_name, last_name, username, is_bot, role) values(0, 'telegram', 'bot', 'driveSafe', true, 'bot')
+    on conflict (chat_id) do nothing;
+select setval('users_id_seq', greatest(1, currval('users_id_seq')));
 
 create table if not exists car_brand
 (
