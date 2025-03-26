@@ -19,11 +19,6 @@ class Storable(ABC):
     cursor.execute(sql_commands)
     cursor.close()
 
-    @staticmethod
-    def remove_tables() -> None:
-        cursor = Storable.connection.cursor()
-        cursor.execute("drop table if exists car_listing, cars, car_model, car_brand"
-                       ",chat_users, messages, chats, users")
 
 def insert_car_brand(car_brand) -> int:
     cursor = Storable.connection.cursor()

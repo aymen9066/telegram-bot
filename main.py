@@ -24,7 +24,8 @@ async def start(update : Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 async def message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     assert(update.message is not None)
-    assert(update.message.text is not None)
+    assert(update.message.text is not None and update.message.from_user is not None)
+    user: Personne = Client.create_from_telegram_user(update.message.chat_id, update.message.from_user)
     if update.message.text.lower() == "bonjour":
         await update.message.reply_text("bonsoir")
 

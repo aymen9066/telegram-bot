@@ -1,4 +1,5 @@
 from __future__ import annotations
+import os
 from abc import ABC
 from datetime import datetime
 from telegram import User as telegramUser
@@ -17,7 +18,7 @@ class Personne(Storable, ABC):
         self.cars : list[Voiture] = []
 
     def store_db(self):
-        self.id = insert_user(self.chat_id, self.first_name, self.last_name, self.username, self.is_bot, self.language_code if self.language_code is not None else "fr", self.role)
+        self.id = insert_user(self.chat_id ,self.first_name, self.last_name, self.username, self.is_bot, self.language_code if self.language_code is not None else "fr", self.role)
 
     def __str__(self):
         return f"{self.__class__.__name__} {self.first_name},{self.last_name} avec chat_id = {self.chat_id} et username = {self.username} et is_bot = {self.is_bot} et lang = {self.language_code}"
@@ -39,7 +40,7 @@ class Client(Personne):
 
     @staticmethod
     def create_from_telegram_user(chat_id : int, user : telegramUser) -> Personne:
-        return Personne(chat_id, user.first_name, user.last_name, user.username, user.is_bot, user.language_code)
+        return Client(chat_id, user.first_name, user.last_name, user.username, user.is_bot, user.language_code)
 
 class Mecanicien(Personne):
     def __init__(self, chat_id: int, first_name: str, last_name: str, username: str, is_bot: bool, language_code: str, password: str):
