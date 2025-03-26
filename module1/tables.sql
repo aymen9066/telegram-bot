@@ -1,7 +1,6 @@
 create table if not exists users
 (
     id            serial primary key,
-    chat_id       bigint     not null unique,
     first_name    text    not null,
     last_name     text,
     username      text,
@@ -9,8 +8,10 @@ create table if not exists users
     language_code text default 'fr',
     password      text,
     role          text default 'client',
-    constraint check_role check (role in ('client', 'mecanicien'))
+    constraint check_role check (role in ('client', 'mecanicien', 'bot'))
 );
+insert into users(first_name, last_name, username, is_bot, role) values('telegram', 'bot', 'driveSafe', true, 'bot');
+select setval('users_id_seq', currval('users_id_seq')+1);
 
 create table if not exists car_brand
 (
