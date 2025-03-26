@@ -1,4 +1,4 @@
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from telegram.ext import Application, CommandHandler, MessageHandler, CallbackContext, filters, ContextTypes
 from module1.join import Personne, Client, Voiture
 from module1.storage import *
@@ -21,7 +21,8 @@ async def start(update : Update, context: ContextTypes.DEFAULT_TYPE) -> None:
                              ,username = update.message.from_user.username
                              ,is_bot = update.message.from_user.is_bot
                              ,language_code = update.message.from_user.language_code)
-    keyboard = [[InlineKeyboardButton("Entrez les information de votre vehicule", web_app= {"url": f"{site_url}/info-voiture?chat_id={user.chat_id}&user_id={user.id}"} )]]
+    #keyboard = [[InlineKeyboardButton("Entrez les information de votre vehicule", web_app= {"url": f"{site_url}/info-voiture?chat_id={user.chat_id}&user_id={user.id}"} )]]
+    keyboard = [[InlineKeyboardButton("Entrez les information de votre vehicule", web_app= WebAppInfo(f"{site_url}/info-voiture?chat_id={user.chat_id}&user_id={user.id}"))]]
     button_info_voiture = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text("Bonjour je suis un bot de diagnostic des pannes automobiles!", reply_markup = button_info_voiture)
 
