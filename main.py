@@ -1,3 +1,4 @@
+import telegram
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from telegram.ext import Application, CommandHandler, MessageHandler, CallbackContext, filters, ContextTypes
 from module1.join import Personne, Client, Voiture
@@ -10,17 +11,12 @@ info_voiture_url : str = ""
 if BOT_TOKEN is None:
     raise ValueError("can't find env variable bot_token!")
 
+
 async def start(update : Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     print("Command start was called.")
     if update.message is None or update.message.from_user is None:
         raise ValueError("No message found in the update!")
-    print(f"{update.message.from_user}")
-    user : Personne = Client(chat_id = update.message.chat_id
-                             ,first_name = update.message.from_user.first_name
-                             ,last_name = update.message.from_user.last_name
-                             ,username = update.message.from_user.username
-                             ,is_bot = update.message.from_user.is_bot
-                             ,language_code = update.message.from_user.language_code)
+    user : Personne = Client.create_from_telegram_user(update.message.chat_id, update.message.from_user)
     #keyboard = [[InlineKeyboardButton("Entrez les information de votre vehicule", web_app= {"url": f"{site_url}/info-voiture?chat_id={user.chat_id}&user_id={user.id}"} )]]
     keyboard = [[InlineKeyboardButton("Entrez les information de votre vehicule", web_app= WebAppInfo(f"{site_url}/info-voiture?chat_id={user.chat_id}&user_id={user.id}"))]]
     button_info_voiture = InlineKeyboardMarkup(keyboard)

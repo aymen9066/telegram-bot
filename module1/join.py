@@ -1,6 +1,8 @@
 from __future__ import annotations
 from abc import ABC
 from datetime import datetime
+from telegram import User as telegramUser
+
 from module1.storage import *
 
 class Personne(Storable, ABC):
@@ -34,6 +36,10 @@ class Client(Personne):
     def __init__(self, chat_id: int, first_name: str, last_name: str|None, username: str|None, is_bot: bool, language_code: str|None):
         Personne.__init__(self, chat_id, first_name, last_name, username, is_bot, language_code)
         self.store_db()
+
+    @staticmethod
+    def create_from_telegram_user(chat_id : int, user : telegramUser) -> Personne:
+        return Personne(chat_id, user.first_name, user.last_name, user.username, user.is_bot, user.language_code)
 
 class Mecanicien(Personne):
     def __init__(self, chat_id: int, first_name: str, last_name: str, username: str, is_bot: bool, language_code: str, password: str):
