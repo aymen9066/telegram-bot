@@ -25,6 +25,12 @@ async def start(update : Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     button_info_voiture = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text("Bonjour je suis un bot de diagnostic des pannes automobiles!", reply_markup = button_info_voiture)
 
+async def message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    assert(update.message is not None)
+    assert(update.message.text is not None)
+    if update.message.text.lower() == "bonjour":
+        await update.message.reply_text("bonsoir")
+
 if __name__ == "__main__":
     #Gestion ngrok
     try:
@@ -42,5 +48,6 @@ if __name__ == "__main__":
     app = Application.builder().token(BOT_TOKEN).build()
     print("Telegram bot has started...")
     app.add_handler(CommandHandler("start", start))
+    app.add_handler(MessageHandler(filters.TEXT, message_handler))
     app.run_polling()
 

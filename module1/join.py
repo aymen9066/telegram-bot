@@ -44,10 +44,9 @@ class Mecanicien(Personne):
 
 class Voiture(Storable):
     def __init__(self, brand : str , model : str, production_year : int|None, km : int = 0, user : Personne | None = None):
-
         self.brand = brand
         self.model = model
-        if self.is_production_year_valid(production_year):
+        if Voiture.is_production_year_valid(production_year):
             self.production_year = production_year
         else:
             self.production_year = None
@@ -65,9 +64,12 @@ class Voiture(Storable):
             return Voiture(brand = data[0],model = data[1],production_year=data[2],km=data[3])
         return None
 
-    def is_production_year_valid(self, value : int|None) -> bool:
+    @staticmethod
+    def is_production_year_valid(value : int|None) -> bool:
         if value is not None and 1970 <= value <= datetime.now().year:
+            print("production year is valid")
             return True
+        print(f"production year is not valid p = {value} and now is {datetime.now().year}!")
         return False
 
     def store_db(self):

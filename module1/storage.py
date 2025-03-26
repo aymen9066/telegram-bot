@@ -30,7 +30,7 @@ def insert_car_brand(car_brand) -> int:
         return id[0]
     return id[0]
 
-def insert_car_model(id_brand : int, car_model : str, production_year : str|None) -> int|None:
+def insert_car_model(id_brand : int, car_model : str, production_year : int) -> int|None:
     cursor = Storable.connection.cursor()
     id = cursor.execute(f"select id from car_model where name = '{car_model}'").fetchone()
     if production_year is None and id:
