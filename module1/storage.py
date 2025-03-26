@@ -23,23 +23,23 @@ def insert_car_brand(car_brand) -> int:
     cursor = Storable.connection.cursor()
     id = cursor.execute(f"select id from car_brand where name = '{car_brand}'").fetchone()
     if not id:
-        cursor.execute("insert into car_brand(name) values(%s) returning id", (car_brand,))
+        cursor.execute("insert into car_brand(name) values(%s) on conflict (name) do nothing returning id", (car_brand,))
         id = cursor.fetchone()
         if id is None:
             raise ValueError("insertion of car brand failed!")
         return id[0]
     return id[0]
 
-def insert_car_model(id_brand : int, car_model : str, production_year : str|None) -> int:
+def insert_car_model(id_brand : int, car_model : str, production_year : str|None) -> int|None:
     cursor = Storable.connection.cursor()
     id = cursor.execute(f"select id from car_model where name = '{car_model}'").fetchone()
-    if not id:
-        cursor.execute("insert into car_model(id_brand, name, production_year) values(%s,%s,%s) returning id"
-                       ,(id_brand, car_model, production_year))
-        id = cursor.fetchone()
-        if id is None:
-            raise ValueError("insertion of car model failed!")
-        return id[0]
+    if production_year is None and id:
+        return None
+    cursor.execute("insert into car_model(id_brand, name, production_year) values(%s,%s,%s) returning id"
+                   ,(id_brand, car_model, production_year))
+    id = cursor.fetchone()
+    if id is None:
+        raise ValueError("insertion of car model failed!")
     return id[0]
 
 def insert_car(id_model : int, km_driven : int) -> int:

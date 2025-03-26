@@ -15,7 +15,7 @@ create table if not exists users
 create table if not exists car_brand
 (
     id   serial primary key,
-    name text not null
+    name text not null unique
 );
 
 create table if not exists car_model
