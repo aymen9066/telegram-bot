@@ -12,6 +12,7 @@ class Storable(ABC):
     if db_password is None:
         raise ValueError("can't find env variable db_password!")
     connection = psycopg.connect(f"dbname={db_user} user={db_user} password={db_password} host=localhost")
+    connection.autocommit = True
     cursor = connection.cursor()
     f =  open(os.path.dirname(os.path.realpath(__file__))+ "/tables.sql", "r")
     sql_commands = f.read()
