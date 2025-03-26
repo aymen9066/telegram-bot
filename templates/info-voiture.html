@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Details Voiture</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        h2 {
+            color: #333;
+        }
+        input {
+            width: calc(100% - 10px);
+            padding: 10px 0;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+    <script>
+        function submitForm() {
+            const carBrand = document.getElementById('carBrand').value;
+            const carModel = document.getElementById('carModel').value;
+            const carYear = document.getElementById('carYear').value;
+            const kmDriven = document.getElementById('kmDriven').value;
+            const url = new URLSearchParams(window.location.search);
+            const chat_id = url.get("chat_id")
+            const user_id = url.get("user_id")
+
+            const data = { carBrand, carModel, carYear, kmDriven, chat_id, user_id};
+            fetch('/submit_car_details', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            }).then(response => response.json())
+                .then(data => alert(data.message));
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <h2>Entrez les informations de votre vehicule.</h2>
+    <label>Marque:</label> <input type="text" id="carBrand" placeholder="Enter la marque"><br>
+    <label>Model:</label> <input type="text" id="carModel" placeholder="Enter le model"><br>
+    <label>Annee de production:</label> <input type="number" id="carYear" placeholder="Enter l'anne de production"><br>
+    <label>KM Conduite:</label> <input type="number" id="kmDriven" placeholder="Enter votre KM"><br>
+    <button onclick="submitForm()">Submit</button>
+</div>
+</body>
+</html>

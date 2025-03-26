@@ -23,7 +23,7 @@ create table if not exists car_model
     id              serial primary key,
     id_brand        int  not null,
     name            text not null,
-    production_year date,
+    production_year int,
     constraint fk_idbrand foreign key (id_brand) references car_brand (id)
 );
 

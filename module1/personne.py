@@ -13,6 +13,7 @@ class Personne(module1.storage.Storable, ABC):
         self.is_bot = is_bot
         self.language_code = language_code
         self.role = "client"
+        self.voitures : list = []
         self.store_db()
 
     def store_db(self):
@@ -41,3 +42,4 @@ class Mecanicien(Personne):
         Personne.__init__(self,chat_id, first_name, last_name, username, is_bot, language_code)
         self.password = password
         self.role = "mecanicien"
+
