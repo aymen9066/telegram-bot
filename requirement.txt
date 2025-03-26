@@ -9,6 +9,7 @@ python-dotenv
 
 #Module request advance
 requests
+types-requests
 
 #Driver postgresql (pour se connecter a la base de donne)
 psycopg

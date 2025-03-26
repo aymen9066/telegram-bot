@@ -20,7 +20,7 @@ class Personne(Storable, ABC):
 
 
 class Client(Personne):
-    def __init__(self, chat_id: int, first_name: str, last_name: str, username: str, is_bot: bool, language_code: str):
+    def __init__(self, chat_id: int, first_name: str, last_name: str|None, username: str|None, is_bot: bool, language_code: str|None):
         Personne.__init__(self, chat_id, first_name, last_name, username, is_bot, language_code)
         self.store_db()
 

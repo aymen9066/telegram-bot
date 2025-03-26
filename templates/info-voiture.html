@@ -55,7 +55,7 @@
             const user_id = url.get("user_id")
 
             const data = { carBrand, carModel, carYear, kmDriven, chat_id, user_id};
-            fetch('/submit_car_details', {
+            fetch('/submit-car-details', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
