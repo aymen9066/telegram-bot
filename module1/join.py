@@ -24,11 +24,9 @@ class Personne(Storable, ABC):
         return f"{self.__class__.__name__} {self.first_name},{self.last_name} avec chat_id = {self.chat_id} et username = {self.username} et is_bot = {self.is_bot} et lang = {self.language_code} et id = {self.id}"
 
     def find_cars(self) -> int:
-        print("enter finding the car...")
         cursor = Storable.connection.cursor()
         rows = cursor.execute(f"select id_car from car_listing where id_user = {self.id}").fetchall()
         for row in rows:
-            print("voiture trouve en find cars...")
             voiture = Voiture.createFromId(row[0], self)
             assert(voiture is not None)
             if voiture not in self.cars:
@@ -77,9 +75,7 @@ class Voiture(Storable):
     @staticmethod
     def is_production_year_valid(value : int|None) -> bool:
         if value is not None and 1970 <= value <= datetime.now().year:
-            print("production year is valid")
             return True
-        print(f"production year is not valid p = {value} and now is {datetime.now().year}!")
         return False
 
     def store_db(self):
@@ -130,7 +126,7 @@ class Model:
         response = requests.post(
             url="https://openrouter.ai/api/v1/chat/completions",
             headers={
-                "Authorization": "Bearer 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",
+                "Authorization": f"Bearer {self.api_key}",
                 "Content-Type": "application/json",
             },
             data=json.dumps({

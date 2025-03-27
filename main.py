@@ -29,11 +29,11 @@ async def message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user.find_cars()
     print(user)
     print(f"the message number {update.message.message_id} was received : {update.message.text}")
+    model = Model.create("deepseek", user.chat_id)
     if update.message.text.lower() == "test":
         await update.message.reply_text("testing...")
         return
     Storable.insert_message(user.chat_id, user.id, update.message.message_id, update.message.text)
-    model = Model.create("deepseek", user.chat_id)
     if len(user.cars) > 0:
         car : Voiture = user.cars[len(user.cars)-1]
         model.personal_context["car"] = (f"Ma voiture est une {car.brand},{car.model} "
@@ -41,9 +41,6 @@ async def message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     answer = model.prompt(update.message.text)
     Storable.insert_message(user.chat_id, 1, update.message.message_id+1, answer)
     await update.message.reply_text(answer)
-
-    if update.message.text.lower() == "bonjour":
-        await update.message.reply_text("bonsoir")
 
 if __name__ == "__main__":
     #Gestion ngrok
