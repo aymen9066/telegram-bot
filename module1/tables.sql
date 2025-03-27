@@ -52,7 +52,7 @@ create table if not exists chats
     id bigint primary key
 );
 create table if not exists chat_users(
-    chat_id bigint not null,
+    chat_id bigint not null unique,
     user_id int not null,
     primary key (chat_id, user_id),
     constraint fk_chatid foreign key (chat_id) references chats(id),
@@ -68,9 +68,9 @@ create table if not exists messages(
     constraint fk_userid foreign key (user_id) references users(id)
 );
 create or replace view message_view as
-    select chat_users.chat_id as chat_id, chat_users.user_id as user_id, messages.id as message_id, messages.number as number, messages.content as content
-    from chat_users, messages
-    where chat_users.chat_id = messages.chat_id and chat_users.user_id = messages.user_id;
+    select chat_users.chat_id as chat_id, chat_users.user_id as user_id, messages.id as message_id, messages.number as number, messages.content as content, users.is_bot as is_bot
+    from chat_users, messages, users
+    where chat_users.chat_id = messages.chat_id and chat_users.user_id = messages.user_id and chat_users.user_id = users.id;
 
 create or replace view car_view as
     select car_listing.id_car as car_id, car_listing.id_user as user_id, car_brand.name as brand_name,

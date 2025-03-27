@@ -1,7 +1,7 @@
 import telegram
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from telegram.ext import Application, CommandHandler, MessageHandler, CallbackContext, filters, ContextTypes
-from module1.join import Personne, Client, Voiture
+from module1.join import *
 from module1.storage import *
 import requests, subprocess, time
 
@@ -26,6 +26,22 @@ async def message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     assert(update.message is not None)
     assert(update.message.text is not None and update.message.from_user is not None)
     user: Personne = Client.create_from_telegram_user(update.message.chat_id, update.message.from_user)
+    user.find_cars()
+    print(user)
+    print(f"the message number {update.message.message_id} was received : {update.message.text}")
+    if update.message.text.lower() == "test":
+        await update.message.reply_text("testing...")
+        return
+    Storable.insert_message(user.chat_id, user.id, update.message.message_id, update.message.text)
+    model = Model.create("deepseek", user.chat_id)
+    if len(user.cars) > 0:
+        car : Voiture = user.cars[len(user.cars)-1]
+        model.personal_context["car"] = (f"Ma voiture est une {car.brand},{car.model} "
+                                         f"produit en {car.production_year} avec un killometrage de {car.km}")
+    answer = model.prompt(update.message.text)
+    Storable.insert_message(user.chat_id, 1, update.message.message_id+1, answer)
+    await update.message.reply_text(answer)
+
     if update.message.text.lower() == "bonjour":
         await update.message.reply_text("bonsoir")
 
