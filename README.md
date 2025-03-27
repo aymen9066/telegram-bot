@@ -29,4 +29,4 @@ python main.py
 ```
 
 # Licence
-Ce projet est sous la licence [MIT](LICENSE.txt).
+Ce projet est sous la licence [MIT](LICENSE).
