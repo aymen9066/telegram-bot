@@ -2,15 +2,20 @@
 Un Chatbot Telegram Intelligent pour le Diagnostic des Pannes Automobiles via l’Analyse de Texte et d’Images avec l’Apprentissage
 Profond.
 # Comment installer?
-### 1. Cloner le depot
+### 1. Intaller Posgresql
+Utiliser scoop pour une installation simple
+```bash
+scoop install main/postgresql
+```
+### 2. Cloner le depot
 ```bash
 git clone https://github.com/
 ```
-### 2. Creer un environment virtuel
+### 3. Creer un environment virtuel
 ```bash
 python -m venv .venv
 ```
-### 3. Activer l'environment
+### 4. Activer l'environment
 * Windows
 ```bash
 .venv\Scripts\activate
@@ -19,11 +24,11 @@ python -m venv .venv
 ```bash
 source .venv/bin/activate
 ```
-### 4. Installer les modules necessaires
+### 5. Installer les modules necessaires
 ```bash
 pip install -r requirement.txt
 ```
-### 5. Executer main.py
+### 6. Executer main.py
 ```bash
 python main.py
 ```
